@@ -18,6 +18,8 @@
  */
 
 import { FormGroup, FormGroupProps } from '@patternfly/react-core/dist/js/components/Form';
+import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import * as React from 'react';
 import { FilterDOMPropsKeys, filterDOMProps } from 'uniforms';
 
@@ -56,10 +58,23 @@ type WrapperProps = {
   errorMessage?: string;
   help?: string;
   showInlineError?: boolean;
+  description?: React.ReactNode;
 } & Omit<FormGroupProps, 'onChange' | 'fieldId'>;
 
 export default function wrapField(
-  { id, label, type, disabled, error, errorMessage, showInlineError, help, required, ...props }: WrapperProps,
+  {
+    id,
+    label,
+    type,
+    disabled,
+    error,
+    errorMessage,
+    showInlineError,
+    help,
+    required,
+    description,
+    ...props
+  }: WrapperProps,
   children: React.ReactNode,
 ) {
   return (
@@ -70,6 +85,20 @@ export default function wrapField(
       label={label}
       isRequired={required}
       type={type}
+      labelIcon={
+        description ? (
+          <Popover bodyContent={description}>
+            <button
+              type="button"
+              aria-label="field description"
+              onClick={(e) => e.preventDefault()}
+              className="pf-c-form__group-label-help"
+            >
+              <HelpIcon />
+            </button>
+          </Popover>
+        ) : undefined
+      }
       {...filterDOMProps(props)}
     >
       {children}
